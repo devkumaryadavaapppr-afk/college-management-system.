@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magadh Institute of Technology — Registrar's Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161b22;
+    --ink-2:#1f2733;
+    --ink-3:#2a3441;
+    --parchment:#f4efe1;
+    --card:#fffdf7;
+    --brass:#b4884b;
+    --brass-dark:#8c6530;
+    --brass-light:#e4cfa0;
+    --maroon:#7a3030;
+    --maroon-bg:#f6e6e2;
+    --forest:#3f6b4f;
+    --forest-bg:#e5efe4;
+    --text:#23241f;
+    --muted:#726c5c;
+    --line:#ded5be;
+    --line-dark:#3a4453;
+    --radius:3px;
+    --shadow: 0 1px 2px rgba(22,27,34,0.08), 0 4px 14px rgba(22,27,34,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--parchment);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  ::selection{background:var(--brass-light);}
+  a{color:inherit;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--brass-dark);outline-offset:2px;}
+
+  /* ---------- Layout ---------- */
+  #app{display:flex;min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:236px;
+    flex-shrink:0;
+    background:linear-gradient(180deg,var(--ink) 0%, var(--ink-2) 100%);
+    color:#e9e4d6;
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .seal-block{
+    padding:26px 20px 20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-bottom:1px solid var(--line-dark);
+  }
+  .seal{
+    width:46px;height:46px;flex-shrink:0;border-radius:50%;
+    border:2px solid var(--brass);
+    background:radial-gradient(circle at 35% 30%, #2a3441, var(--ink));
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .seal::before{
+    content:'';position:absolute;inset:4px;border-radius:50%;
+    border:1px dashed var(--brass);opacity:.6;
+  }
+  .seal span{font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--brass-light);}
+  .seal-text .name{font-family:'Fraunces',serif;font-size:14.5px;line-height:1.25;font-weight:600;color:#f4efe1;}
+  .seal-text .est{font-size:10px;letter-spacing:.09em;color:var(--brass-light);text-transform:uppercase;margin-top:3px;}
+
+  nav.primary{padding:18px 12px;flex:1;overflow-y:auto;}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;
+    width:100%;text-align:left;padding:10px 12px;margin-bottom:2px;
+    background:transparent;border:none;border-radius:var(--radius);
+    color:#c9c2ab;font-size:13.5px;font-weight:500;letter-spacing:.01em;
+    position:relative;
+  }
+  .nav-item .ic{width:16px;text-align:center;font-size:14px;opacity:.85;}
+  .nav-item:hover{background:rgba(180,136,75,0.12);color:#f4efe1;}
+  .nav-item.active{background:rgba(180,136,75,0.18);color:#f4efe1;}
+  .nav-item.active::before{
+    content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:3px;
+    background:var(--brass);border-radius:2px;
+  }
+  .nav-section-label{
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:#8a8368;padding:14px 12px 6px;
+  }
+  .sidebar-foot{
+    padding:14px 20px 18px;border-top:1px solid var(--line-dark);
+    font-size:11px;color:#8a8368;line-height:1.5;
+  }
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;background:var(--parchment);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:5;
+  }
+  .topbar .title-wrap .eyebrow{
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-dark);font-weight:600;
+  }
+  .topbar h1{margin:2px 0 0;font-size:24px;font-weight:600;letter-spacing:-.01em;}
+  .topbar .actions{display:flex;gap:10px;align-items:center;}
+
+  .btn{
+    border:1px solid var(--line);background:var(--card);color:var(--text);
+    padding:9px 16px;border-radius:var(--radius);font-size:13px;font-weight:600;
+    display:inline-flex;align-items:center;gap:7px;transition:border-color .15s, background .15s;
+  }
+  .btn:hover{border-color:var(--brass-dark);}
+  .btn-primary{background:var(--ink);color:#f4efe1;border-color:var(--ink);}
+  .btn-primary:hover{background:var(--ink-2);}
+  .btn-brass{background:var(--brass);border-color:var(--brass-dark);color:#221704;}
+  .btn-brass:hover{background:var(--brass-dark);color:#f4efe1;}
+  .btn-ghost{background:transparent;border-color:transparent;}
+  .btn-ghost:hover{background:rgba(0,0,0,0.05);}
+  .btn-danger{color:var(--maroon);}
+  .btn.small{padding:6px 11px;font-size:12px;}
+
+  .search-input, .field input, .field select{
+    font-family:'Inter',sans-serif;
+    border:1px solid var(--line);background:var(--card);
+    padding:9px 12px;border-radius:var(--radius);font-size:13px;color:var(--text);
+    width:100%;
+  }
+  .search-input{width:220px;}
+  .search-input:focus, .field input:focus, .field select:focus{border-color:var(--brass-dark);}
+
+  .content{padding:26px 32px 60px;overflow-y:auto;}
+
+  /* ---------- Cards / stats ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+  .stat-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--brass);
+  }
+  .stat-card .label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .stat-card .value{font-family:'Fraunces',serif;font-size:32px;font-weight:600;margin-top:6px;}
+  .stat-card .sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow); margin-bottom:22px;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--line);
+  }
+  .panel-head h3{margin:0;font-size:16px;font-weight:600;}
+  .panel-body{padding:18px 20px;}
+
+  .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;}
+
+  /* dept bars */
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .bar-row:last-child{margin-bottom:0;}
+  .bar-label{width:110px;flex-shrink:0;font-size:12.5px;color:var(--text);}
+  .bar-track{flex:1;background:#efe9d8;border-radius:20px;height:9px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--brass-dark),var(--brass));border-radius:20px;}
+  .bar-count{width:26px;text-align:right;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
+
+  /* recent list */
+  .recent-item{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px dashed var(--line);}
+  .recent-item:last-child{border-bottom:none;}
+  .recent-item .meta{flex:1;min-width:0;}
+  .recent-item .meta .n{font-size:13.5px;font-weight:600;}
+  .recent-item .meta .d{font-size:11.5px;color:var(--muted);}
+
+  /* avatar seal */
+  .avatar{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    background:radial-gradient(circle at 35% 30%, var(--ink-3), var(--ink));
+    border:1.5px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;font-size:12px;color:var(--brass-light);
+  }
+  .avatar.lg{width:46px;height:46px;font-size:15px;}
+
+  /* ---------- Table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;padding:0 14px 10px;border-bottom:1px solid var(--line);
+  }
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#faf6ea;}
+  .cell-name{display:flex;align-items:center;gap:10px;}
+  .cell-name .n{font-weight:600;font-size:13.5px;}
+  .cell-name .r{font-size:11.5px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;
+    font-size:11px;font-weight:600;letter-spacing:.02em;
+  }
+  .badge-paid{background:var(--forest-bg);color:var(--forest);}
+  .badge-due{background:var(--maroon-bg);color:var(--maroon);}
+  .badge-brass{background:#f3e6cd;color:var(--brass-dark);}
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;}
+  .icon-btn{
+    width:28px;height:28px;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);
+    display:inline-flex;align-items:center;justify-content:center;font-size:13px;
+  }
+  .icon-btn:hover{border-color:var(--brass-dark);}
+
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .toolbar select{width:auto;padding:9px 10px;}
+
+  .empty-state{padding:44px 20px;text-align:center;color:var(--muted);}
+  .empty-state .glyph{font-size:26px;margin-bottom:8px;}
+  .empty-state .t{font-weight:600;color:var(--text);margin-bottom:4px;font-family:'Fraunces',serif;font-size:16px;}
+
+  /* ---------- Attendance ---------- */
+  .att-list{display:flex;flex-direction:column;}
+  .att-row{
+    display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px dashed var(--line);
+  }
+  .att-row:last-child{border-bottom:none;}
+  .att-row .meta{flex:1;}
+  .toggle-group{display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;}
+  .toggle-group button{
+    border:none;background:var(--card);padding:6px 14px;font-size:12px;font-weight:600;color:var(--muted);
+  }
+  .toggle-group button.p-active{background:var(--forest);color:#fff;}
+  .toggle-group button.a-active{background:var(--maroon);color:#fff;}
+
+  /* ---------- Timetable ---------- */
+  .timetable{width:100%;border-collapse:collapse;font-size:12px;}
+  .timetable th, .timetable td{border:1px solid var(--line);padding:9px 7px;text-align:center;}
+  .timetable thead th{background:var(--ink);color:#e9e4d6;font-weight:600;font-size:11px;letter-spacing:.04em;}
+  .timetable td.slot-head{background:#f3ecd9;font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-dark);}
+  .timetable td.cell-filled{background:var(--card);}
+  .tt-code{font-weight:700;font-size:12px;}
+  .tt-room{font-size:10px;color:var(--muted);}
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(22,27,34,0.55);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:20px;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--card);width:440px;max-width:100%;border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto;
+    border-top:3px solid var(--brass);
+  }
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);}
+  .modal-head h3{margin:0;font-size:17px;}
+  .modal-body{padding:20px 22px;}
+  .modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .close-x{background:none;border:none;font-size:18px;color:var(--muted);}
+  .close-x:hover{color:var(--text);}
+
+  .toast{
+    position:fixed;bottom:22px;right:22px;background:var(--ink);color:#f4efe1;
+    padding:12px 18px;border-radius:var(--radius);font-size:13px;box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:9px;z-index:60;border-left:3px solid var(--brass);
+    opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media (max-width: 900px){
+    .sidebar{position:fixed;left:-236px;transition:left .2s;z-index:40;}
+    .sidebar.open{left:0;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .content{padding:18px;}
+    .topbar{padding:14px 16px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="seal-block">
+      <div class="seal"><span>MI</span></div>
+      <div class="seal-text">
+        <div class="name">Magadh Institute<br>of Technology</div>
+        <div class="est">Est. 1985 · Registrar's Desk</div>
+      </div>
+    </div>
+    <nav class="primary" id="nav"></nav>
+    <div class="sidebar-foot">Session: Admin<br>Academic Year 2026–27</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="title-wrap">
+        <div class="eyebrow" id="topbar-eyebrow">Registrar's Desk</div>
+        <h1 id="topbar-title">Dashboard</h1>
+      </div>
+      <div class="actions" id="topbar-actions"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   STATE
+========================================================= */
+const DEPTS = ["Computer Science","Electronics","Mechanical","Civil","Electrical","Mathematics"];
+
+let idSeq = 100;
+const nextId = () => ++idSeq;
+
+let students = [
+  {id:1, roll:"MIT23CS001", name:"Ayesha Khan", dept:"Computer Science", year:3, email:"ayesha.khan@mit.ac.in", phone:"9801234501", fee:"Paid", present:42, total:46},
+  {id:2, roll:"MIT23CS002", name:"Rohan Verma", dept:"Computer Science", year:3, email:"rohan.verma@mit.ac.in", phone:"9801234502", fee:"Due", present:35, total:46},
+  {id:3, roll:"MIT24EC010", name:"Priya Singh", dept:"Electronics", year:2, email:"priya.singh@mit.ac.in", phone:"9801234503", fee:"Paid", present:40, total:44},
+  {id:4, roll:"MIT22ME004", name:"Aman Kumar", dept:"Mechanical", year:4, email:"aman.kumar@mit.ac.in", phone:"9801234504", fee:"Paid", present:38, total:44},
+  {id:5, roll:"MIT24CV007", name:"Neha Yadav", dept:"Civil", year:2, email:"neha.yadav@mit.ac.in", phone:"9801234505", fee:"Due", present:30, total:44},
+  {id:6, roll:"MIT23EE003", name:"Suresh Prasad", dept:"Electrical", year:3, email:"suresh.prasad@mit.ac.in", phone:"9801234506", fee:"Paid", present:41, total:46},
+  {id:7, roll:"MIT25CS015", name:"Kritika Jha", dept:"Computer Science", year:1, email:"kritika.jha@mit.ac.in", phone:"9801234507", fee:"Paid", present:20, total:22},
+  {id:8, roll:"MIT22MA002", name:"Vikas Thakur", dept:"Mathematics", year:4, email:"vikas.thakur@mit.ac.in", phone:"9801234508", fee:"Due", present:36, total:44},
+];
+
+let faculty = [
+  {id:1, name:"Dr. Meera Chatterjee", dept:"Computer Science", designation:"Associate Professor", email:"meera.c@mit.ac.in", phone:"9811100201"},
+  {id:2, name:"Dr. Sanjay Ranjan", dept:"Electronics", designation:"Professor", email:"sanjay.r@mit.ac.in", phone:"9811100202"},
+  {id:3, name:"Prof. Anita Sinha", dept:"Mechanical", designation:"Assistant Professor", email:"anita.s@mit.ac.in", phone:"9811100203"},
+  {id:4, name:"Dr. Om Prakash", dept:"Civil", designation:"Professor", email:"om.prakash@mit.ac.in", phone:"9811100204"},
+  {id:5, name:"Prof. Ritu Kumari", dept:"Electrical", designation:"Assistant Professor", email:"ritu.k@mit.ac.in", phone:"9811100205"},
+  {id:6, name:"Dr. Alok Mishra", dept:"Mathematics", designation:"Associate Professor", email:"alok.m@mit.ac.in", phone:"9811100206"},
+];
+
+let courses = [
+  {code:"CS301", name:"Data Structures & Algorithms", dept:"Computer Science", credits:4, facultyId:1, semester:5},
+  {code:"CS305", name:"Operating Systems", dept:"Computer Science", credits:4, facultyId:1, semester:5},
+  {code:"EC210", name:"Digital Electronics", dept:"Electronics", credits:3, facultyId:2, semester:3},
+  {code:"ME402", name:"Thermodynamics", dept:"Mechanical", credits:4, facultyId:3, semester:7},
+  {code:"CV207", name:"Structural Analysis", dept:"Civil", credits:3, facultyId:4, semester:3},
+  {code:"EE303", name:"Power Systems", dept:"Electrical", credits:4, facultyId:5, semester:5},
+  {code:"MA201", name:"Discrete Mathematics", dept:"Mathematics", credits:3, facultyId:6, semester:3},
+  {code:"CS101", name:"Programming Fundamentals", dept:"Computer Science", credits:4, facultyId:1, semester:1},
+];
+
+let attendanceLog = {}; // { "date|code": {studentId: 'P'/'A'} }
+
+const timetable = {
+  periods: ["9:00–9:50","9:50–10:40","11:00–11:50","11:50–12:40","1:30–2:20","2:20–3:10"],
+  days: ["Mon","Tue","Wed","Thu","Fri","Sat"],
+  grid: {
+    Mon:["CS301","EC210","","ME402","CV207","EE303"],
+    Tue:["MA201","CS305","CS301","","EC210","ME402"],
+    Wed:["EE303","CV207","MA201","CS101","","CS305"],
+    Thu:["CS305","CS301","EC210","EE303","MA201",""],
+    Fri:["CV207","","CS101","MA201","ME402","EC210"],
+    Sat:["CS101","EE303","","CV207","","" ]
+  }
+};
+
+let currentView = "dashboard";
+let studentFilter = {dept:"all", q:""};
+let facultyFilter = {dept:"all", q:""};
+let attState = {course:"CS301", date: new Date().toISOString().slice(0,10), marks:{}};
+let editingStudentId = null;
+let editingFacultyId = null;
+let editingCourseCode = null;
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function initials(name){
+  return name.split(" ").filter(w=>!/^(Dr\.|Prof\.)$/.test(w)).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function facultyName(id){
+  const f = faculty.find(x=>x.id===id);
+  return f ? f.name : "Unassigned";
+}
+function attendancePct(s){
+  return s.total ? Math.round((s.present/s.total)*100) : 0;
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* =========================================================
+   NAV
+========================================================= */
+const NAV_ITEMS = [
+  {id:"dashboard", label:"Dashboard", icon:"◈"},
+  {id:"students", label:"Students", icon:"🎓"},
+  {id:"faculty", label:"Faculty", icon:"🖋"},
+  {id:"courses", label:"Courses", icon:"📖"},
+  {id:"attendance", label:"Attendance", icon:"✓"},
+  {id:"fees", label:"Fee Ledger", icon:"₹"},
+  {id:"timetable", label:"Timetable", icon:"▦"},
+];
+
+function renderNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = NAV_ITEMS.map(item => `
+    <button class="nav-item ${currentView===item.id?'active':''}" data-nav="${item.id}">
+      <span class="ic">${item.icon}</span>${item.label}
+    </button>
+  `).join("");
+  nav.querySelectorAll('[data-nav]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ currentView = btn.dataset.nav; renderAll(); });
+  });
+}
+
+/* =========================================================
+   RENDER ROOT
+========================================================= */
+function renderAll(){
+  renderNav();
+  const titleMap = {
+    dashboard:["Overview","Dashboard"],
+    students:["Student Records","Students"],
+    faculty:["Faculty Records","Faculty"],
+    courses:["Academic Catalogue","Courses"],
+    attendance:["Daily Register","Attendance"],
+    fees:["Accounts","Fee Ledger"],
+    timetable:["Weekly Schedule","Timetable"],
+  };
+  document.getElementById('topbar-eyebrow').textContent = titleMap[currentView][0];
+  document.getElementById('topbar-title').textContent = titleMap[currentView][1];
+
+  const actions = document.getElementById('topbar-actions');
+  const content = document.getElementById('content');
+
+  if(currentView==="dashboard"){ actions.innerHTML=""; renderDashboard(content); }
+  else if(currentView==="students"){ renderStudentsTopbar(actions); renderStudents(content); }
+  else if(currentView==="faculty"){ renderFacultyTopbar(actions); renderFaculty(content); }
+  else if(currentView==="courses"){ renderCoursesTopbar(actions); renderCourses(content); }
+  else if(currentView==="attendance"){ actions.innerHTML=""; renderAttendance(content); }
+  else if(currentView==="fees"){ actions.innerHTML=""; renderFees(content); }
+  else if(currentView==="timetable"){ actions.innerHTML=""; renderTimetable(content); }
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+function renderDashboard(root){
+  const totalStudents = students.length;
+  const totalFaculty = faculty.length;
+  const totalCourses = courses.length;
+  const feesDue = students.filter(s=>s.fee==="Due").length;
+  const avgAttendance = Math.round(students.reduce((a,s)=>a+attendancePct(s),0)/students.length);
+
+  const byDept = DEPTS.map(d=>({dept:d, count: students.filter(s=>s.dept===d).length}));
+  const maxCount = Math.max(...byDept.map(d=>d.count), 1);
+
+  const recent = [...students].slice(-4).reverse();
+
+  root.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Enrolled Students</div><div class="value">${totalStudents}</div><div class="sub">Across ${DEPTS.length} departments</div></div>
+      <div class="stat-card"><div class="label">Faculty on Roll</div><div class="value">${totalFaculty}</div><div class="sub">Full & associate</div></div>
+      <div class="stat-card"><div class="label">Active Courses</div><div class="value">${totalCourses}</div><div class="sub">This semester</div></div>
+      <div class="stat-card"><div class="label">Fees Outstanding</div><div class="value">${feesDue}</div><div class="sub">Students with dues</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><h3>Enrolment by Department</h3><span class="badge badge-brass">${avgAttendance}% avg. attendance</span></div>
+        <div class="panel-body">
+          ${byDept.map(d=>`
+            <div class="bar-row">
+              <div class="bar-label">${d.dept}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${(d.count/maxCount)*100}%"></div></div>
+              <div class="bar-count">${d.count}</div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Recent Admissions</h3></div>
+        <div class="panel-body">
+          ${recent.map(s=>`
+            <div class="recent-item">
+              <div class="avatar">${initials(s.name)}</div>
+              <div class="meta">
+                <div class="n">${escapeHtml(s.name)}</div>
+                <div class="d mono">${s.roll} · ${s.dept}</div>
+              </div>
+              <span class="badge ${s.fee==='Paid'?'badge-paid':'badge-due'}">${s.fee}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   STUDENTS
+========================================================= */
+function renderStudentsTopbar(actions){
+  actions.innerHTML = `
+    <input class="search-input" id="stu-search" placeholder="Search students…" value="${escapeHtml(studentFilter.q)}">
+    <select id="stu-dept-filter">
+      <option value="all">All departments</option>
+      ${DEPTS.map(d=>`<option value="${d}" ${studentFilter.dept===d?'selected':''}>${d}</option>`).join("")}
+    </select>
+    <button class="btn btn-brass" id="stu-add">+ Add Student</button>
+  `;
+  actions.querySelector('#stu-search').addEventListener('input', e=>{ studentFilter.q = e.target.value; renderStudents(document.getElementById('content')); });
+  actions.querySelector('#stu-dept-filter').addEventListener('change', e=>{ studentFilter.dept = e.target.value; renderStudents(document.getElementById('content')); });
+  actions.querySelector('#stu-add').addEventListener('click', ()=> openStudentModal(null));
+}
+
+function renderStudents(root){
+  let list = students.filter(s=>{
+    const matchesDept = studentFilter.dept==="all" || s.dept===studentFilter.dept;
+    const q = studentFilter.q.toLowerCase();
+    const matchesQ = !q || s.name.toLowerCase().includes(q) || s.roll.toLowerCase().includes(q);
+    return matchesDept && matchesQ;
+  });
+
+  root.innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h3>Student Register</h3><span class="badge badge-brass">${list.length} record${list.length!==1?'s':''}</span></div>
+      ${list.length===0 ? emptyState("No students match", "Try clearing the search or department filter.") : `
+      <table>
+        <thead><tr>
+          <th>Student</th><th>Department</th><th>Year</th><th>Attendance</th><th>Fee Status</th><th></th>
+        </tr></thead>
+        <tbody>
+          ${list.map(s=>`
+            <tr>
+              <td>
+                <div class="cell-name">
+                  <div class="avatar">${initials(s.name)}</div>
+                  <div><div class="n">${escapeHtml(s.name)}</div><div class="r">${s.roll}</div></div>
+                </div>
+              </td>
+              <td>${s.dept}</td>
+              <td>Year ${s.year}</td>
+              <td class="mono">${attendancePct(s)}%</td>
+              <td><span class="badge ${s.fee==='Paid'?'badge-paid':'badge-due'}">${s.fee}</span></td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn" title="Edit" data-edit-stu="${s.id}">✎</button>
+                  <button class="icon-btn" title="Remove" data-del-stu="${s.id}">✕</button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>`}
+    </div>
+  `;
+  root.querySelectorAll('[data-edit-stu]').forEach(b=>b.addEventListener('click', ()=>openStudentModal(Number(b.dataset.editStu))));
+  root.querySelectorAll('[data-del-stu]').forEach(b=>b.addEventListener('click', ()=>{
+    const s = students.find(x=>x.id===Number(b.dataset.delStu));
+    if(confirm(`Remove ${s.name} from the register?`)){
+      students = students.filter(x=>x.id!==s.id);
+      toast(`${s.name} removed`);
+      renderAll();
+    }
+  }));
+}
+
+function openStudentModal(id){
+  editingStudentId = id;
+  const s = id ? students.find(x=>x.id===id) : {roll:"",name:"",dept:DEPTS[0],year:1,email:"",phone:"",fee:"Due",present:0,total:0};
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-head"><h3>${id?'Edit Student':'Add Student'}</h3><button class="close-x" id="modal-close">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Full Name</label><input id="f-name" value="${escapeHtml(s.name)}" placeholder="e.g. Ayesha Khan"></div>
+      <div class="field-row">
+        <div class="field"><label>Roll Number</label><input id="f-roll" value="${escapeHtml(s.roll)}" placeholder="MIT25CS020"></div>
+        <div class="field"><label>Year</label>
+          <select id="f-year">${[1,2,3,4].map(y=>`<option value="${y}" ${s.year===y?'selected':''}>Year ${y}</option>`).join("")}</select>
+        </div>
+      </div>
+      <div class="field"><label>Department</label>
+        <select id="f-dept">${DEPTS.map(d=>`<option value="${d}" ${s.dept===d?'selected':''}>${d}</option>`).join("")}</select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input id="f-email" value="${escapeHtml(s.email)}" placeholder="name@mit.ac.in"></div>
+        <div class="field"><label>Phone</label><input id="f-phone" value="${escapeHtml(s.phone)}" placeholder="98xxxxxxxx"></div>
+      </div>
+      <div class="field"><label>Fee Status</label>
+        <select id="f-fee">
+          <option value="Paid" ${s.fee==='Paid'?'selected':''}>Paid</option>
+          <option value="Due" ${s.fee==='Due'?'selected':''}>Due</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-save">${id?'Save changes':'Add student'}</button>
+    </div>
+  `;
+  openOverlay();
+  modal.querySelector('#modal-close').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-cancel').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-save').addEventListener('click', ()=>{
+    const name = modal.querySelector('#f-name').value.trim();
+    const roll = modal.querySelector('#f-roll').value.trim();
+    if(!name || !roll){ toast("Name and roll number are required"); return; }
+    const data = {
+      name, roll,
+      year:Number(modal.querySelector('#f-year').value),
+      dept: modal.querySelector('#f-dept').value,
+      email: modal.querySelector('#f-email').value.trim(),
+      phone: modal.querySelector('#f-phone').value.trim(),
+      fee: modal.querySelector('#f-fee').value,
+    };
+    if(id){
+      Object.assign(students.find(x=>x.id===id), data);
+      toast("Student record updated");
+    } else {
+      students.push({id:nextId(), present:0, total:0, ...data});
+      toast("Student added to register");
+    }
+    closeOverlay();
+    renderAll();
+  });
+}
+
+/* =========================================================
+   FACULTY
+========================================================= */
+function renderFacultyTopbar(actions){
+  actions.innerHTML = `
+    <input class="search-input" id="fac-search" placeholder="Search faculty…" value="${escapeHtml(facultyFilter.q)}">
+    <select id="fac-dept-filter">
+      <option value="all">All departments</option>
+      ${DEPTS.map(d=>`<option value="${d}" ${facultyFilter.dept===d?'selected':''}>${d}</option>`).join("")}
+    </select>
+    <button class="btn btn-brass" id="fac-add">+ Add Faculty</button>
+  `;
+  actions.querySelector('#fac-search').addEventListener('input', e=>{ facultyFilter.q=e.target.value; renderFaculty(document.getElementById('content')); });
+  actions.querySelector('#fac-dept-filter').addEventListener('change', e=>{ facultyFilter.dept=e.target.value; renderFaculty(document.getElementById('content')); });
+  actions.querySelector('#fac-add').addEventListener('click', ()=>openFacultyModal(null));
+}
+
+function renderFaculty(root){
+  let list = faculty.filter(f=>{
+    const matchesDept = facultyFilter.dept==="all" || f.dept===facultyFilter.dept;
+    const q = facultyFilter.q.toLowerCase();
+    const matchesQ = !q || f.name.toLowerCase().includes(q);
+    return matchesDept && matchesQ;
+  });
+  root.innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h3>Faculty Register</h3><span class="badge badge-brass">${list.length} record${list.length!==1?'s':''}</span></div>
+      ${list.length===0 ? emptyState("No faculty match", "Try a different search or department.") : `
+      <table>
+        <thead><tr><th>Faculty</th><th>Department</th><th>Designation</th><th>Contact</th><th></th></tr></thead>
+        <tbody>
+          ${list.map(f=>`
+            <tr>
+              <td><div class="cell-name"><div class="avatar">${initials(f.name)}</div><div class="n">${escapeHtml(f.name)}</div></div></td>
+              <td>${f.dept}</td>
+              <td>${f.designation}</td>
+              <td><div style="font-size:12px">${escapeHtml(f.email)}<br><span class="mono" style="color:var(--muted)">${f.phone}</span></div></td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn" title="Edit" data-edit-fac="${f.id}">✎</button>
+                  <button class="icon-btn" title="Remove" data-del-fac="${f.id}">✕</button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>`}
+    </div>
+  `;
+  root.querySelectorAll('[data-edit-fac]').forEach(b=>b.addEventListener('click', ()=>openFacultyModal(Number(b.dataset.editFac))));
+  root.querySelectorAll('[data-del-fac]').forEach(b=>b.addEventListener('click', ()=>{
+    const f = faculty.find(x=>x.id===Number(b.dataset.delFac));
+    if(confirm(`Remove ${f.name} from faculty records?`)){
+      faculty = faculty.filter(x=>x.id!==f.id);
+      toast(`${f.name} removed`);
+      renderAll();
+    }
+  }));
+}
+
+function openFacultyModal(id){
+  editingFacultyId = id;
+  const f = id ? faculty.find(x=>x.id===id) : {name:"",dept:DEPTS[0],designation:"Assistant Professor",email:"",phone:""};
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-head"><h3>${id?'Edit Faculty':'Add Faculty'}</h3><button class="close-x" id="modal-close">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Full Name</label><input id="f-name" value="${escapeHtml(f.name)}" placeholder="e.g. Dr. Meera Chatterjee"></div>
+      <div class="field-row">
+        <div class="field"><label>Department</label>
+          <select id="f-dept">${DEPTS.map(d=>`<option value="${d}" ${f.dept===d?'selected':''}>${d}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>Designation</label>
+          <select id="f-desig">
+            ${["Professor","Associate Professor","Assistant Professor"].map(d=>`<option ${f.designation===d?'selected':''}>${d}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input id="f-email" value="${escapeHtml(f.email)}" placeholder="name@mit.ac.in"></div>
+        <div class="field"><label>Phone</label><input id="f-phone" value="${escapeHtml(f.phone)}" placeholder="98xxxxxxxx"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-save">${id?'Save changes':'Add faculty'}</button>
+    </div>
+  `;
+  openOverlay();
+  modal.querySelector('#modal-close').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-cancel').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-save').addEventListener('click', ()=>{
+    const name = modal.querySelector('#f-name').value.trim();
+    if(!name){ toast("Name is required"); return; }
+    const data = {
+      name,
+      dept: modal.querySelector('#f-dept').value,
+      designation: modal.querySelector('#f-desig').value,
+      email: modal.querySelector('#f-email').value.trim(),
+      phone: modal.querySelector('#f-phone').value.trim(),
+    };
+    if(id){
+      Object.assign(faculty.find(x=>x.id===id), data);
+      toast("Faculty record updated");
+    } else {
+      faculty.push({id:nextId(), ...data});
+      toast("Faculty added");
+    }
+    closeOverlay();
+    renderAll();
+  });
+}
+
+/* =========================================================
+   COURSES
+========================================================= */
+function renderCoursesTopbar(actions){
+  actions.innerHTML = `<button class="btn btn-brass" id="course-add">+ Add Course</button>`;
+  actions.querySelector('#course-add').addEventListener('click', ()=>openCourseModal(null));
+}
+
+function renderCourses(root){
+  root.innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h3>Course Catalogue</h3><span class="badge badge-brass">${courses.length} courses</span></div>
+      <table>
+        <thead><tr><th>Code</th><th>Course</th><th>Department</th><th>Credits</th><th>Instructor</th><th>Sem</th><th></th></tr></thead>
+        <tbody>
+          ${courses.map(c=>`
+            <tr>
+              <td class="mono" style="font-weight:600">${c.code}</td>
+              <td>${escapeHtml(c.name)}</td>
+              <td>${c.dept}</td>
+              <td class="mono">${c.credits}</td>
+              <td>${escapeHtml(facultyName(c.facultyId))}</td>
+              <td class="mono">${c.semester}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn" title="Edit" data-edit-course="${c.code}">✎</button>
+                  <button class="icon-btn" title="Remove" data-del-course="${c.code}">✕</button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+  root.querySelectorAll('[data-edit-course]').forEach(b=>b.addEventListener('click', ()=>openCourseModal(b.dataset.editCourse)));
+  root.querySelectorAll('[data-del-course]').forEach(b=>b.addEventListener('click', ()=>{
+    const c = courses.find(x=>x.code===b.dataset.delCourse);
+    if(confirm(`Remove course ${c.code} — ${c.name}?`)){
+      courses = courses.filter(x=>x.code!==c.code);
+      toast(`${c.code} removed`);
+      renderAll();
+    }
+  }));
+}
+
+function openCourseModal(code){
+  editingCourseCode = code;
+  const c = code ? courses.find(x=>x.code===code) : {code:"",name:"",dept:DEPTS[0],credits:3,facultyId:faculty[0].id,semester:1};
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-head"><h3>${code?'Edit Course':'Add Course'}</h3><button class="close-x" id="modal-close">✕</button></div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Course Code</label><input id="f-code" value="${escapeHtml(c.code)}" placeholder="CS401" ${code?'disabled':''}></div>
+        <div class="field"><label>Credits</label><input id="f-credits" type="number" min="1" max="6" value="${c.credits}"></div>
+      </div>
+      <div class="field"><label>Course Name</label><input id="f-name" value="${escapeHtml(c.name)}" placeholder="e.g. Compiler Design"></div>
+      <div class="field-row">
+        <div class="field"><label>Department</label>
+          <select id="f-dept">${DEPTS.map(d=>`<option value="${d}" ${c.dept===d?'selected':''}>${d}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>Semester</label>
+          <select id="f-sem">${[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${c.semester===n?'selected':''}>Sem ${n}</option>`).join("")}</select>
+        </div>
+      </div>
+      <div class="field"><label>Instructor</label>
+        <select id="f-faculty">${faculty.map(f=>`<option value="${f.id}" ${c.facultyId===f.id?'selected':''}>${f.name}</option>`).join("")}</select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-save">${code?'Save changes':'Add course'}</button>
+    </div>
+  `;
+  openOverlay();
+  modal.querySelector('#modal-close').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-cancel').addEventListener('click', closeOverlay);
+  modal.querySelector('#modal-save').addEventListener('click', ()=>{
+    const codeVal = modal.querySelector('#f-code').value.trim().toUpperCase();
+    const name = modal.querySelector('#f-name').value.trim();
+    if(!codeVal || !name){ toast("Course code and name are required"); return; }
+    if(!code && courses.some(x=>x.code===codeVal)){ toast("That course code already exists"); return; }
+    const data = {
+      name,
+      dept: modal.querySelector('#f-dept').value,
+      credits: Number(modal.querySelector('#f-credits').value)||3,
+      semester: Number(modal.querySelector('#f-sem').value),
+      facultyId: Number(modal.querySelector('#f-faculty').value),
+    };
+    if(code){
+      Object.assign(courses.find(x=>x.code===code), data);
+      toast("Course updated");
+    } else {
+      courses.push({code:codeVal, ...data});
+      toast("Course added to catalogue");
+    }
+    closeOverlay();
+    renderAll();
+  });
+}
+
+/* =========================================================
+   ATTENDANCE
+========================================================= */
+function renderAttendance(root){
+  const key = attState.date + "|" + attState.course;
+  if(!attendanceLog[key]) attendanceLog[key] = {};
+  const marks = attendanceLog[key];
+
+  const course = courses.find(c=>c.code===attState.course);
+  const roster = students.filter(s=>s.dept===course.dept);
+
+  const presentCount = roster.filter(s=>marks[s.id]==='P').length;
+
+  root.innerHTML = `
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Mark Attendance</h3>
+        <span class="badge badge-brass">${presentCount}/${roster.length} present</span>
+      </div>
+      <div class="panel-body">
+        <div class="toolbar" style="margin-bottom:16px;">
+          <select id="att-course">
+            ${courses.map(c=>`<option value="${c.code}" ${attState.course===c.code?'selected':''}>${c.code} — ${c.name}</option>`).join("")}
+          </select>
+          <input type="date" id="att-date" value="${attState.date}" class="search-input" style="width:160px;">
+          <button class="btn" id="att-all-present">Mark all present</button>
+        </div>
+        <div class="att-list">
+          ${roster.length===0 ? emptyState("No students in this department", "Add students to this department first.") : roster.map(s=>`
+            <div class="att-row">
+              <div class="avatar">${initials(s.name)}</div>
+              <div class="meta">
+                <div style="font-weight:600;font-size:13.5px;">${escapeHtml(s.name)}</div>
+                <div class="mono" style="font-size:11.5px;color:var(--muted)">${s.roll}</div>
+              </div>
+              <div class="toggle-group" data-student="${s.id}">
+                <button data-mark="P" class="${marks[s.id]==='P'?'p-active':''}">Present</button>
+                <button data-mark="A" class="${marks[s.id]==='A'?'a-active':''}">Absent</button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      ${roster.length ? `<div class="modal-foot" style="border-top:1px solid var(--line);"><button class="btn btn-primary" id="att-save">Save Attendance</button></div>` : ''}
+    </div>
+  `;
+
+  root.querySelector('#att-course').addEventListener('change', e=>{ attState.course=e.target.value; renderAttendance(root); });
+  root.querySelector('#att-date').addEventListener('change', e=>{ attState.date=e.target.value; renderAttendance(root); });
+  root.querySelectorAll('.toggle-group').forEach(g=>{
+    g.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        marks[Number(g.dataset.student)] = btn.dataset.mark;
+        renderAttendance(root);
+      });
+    });
+  });
+  const allPresentBtn = root.querySelector('#att-all-present');
+  if(allPresentBtn) allPresentBtn.addEventListener('click', ()=>{
+    roster.forEach(s=> marks[s.id]='P');
+    renderAttendance(root);
+  });
+  const saveBtn = root.querySelector('#att-save');
+  if(saveBtn) saveBtn.addEventListener('click', ()=>{
+    roster.forEach(s=>{
+      if(marks[s.id]){
+        s.total += 1;
+        if(marks[s.id]==='P') s.present += 1;
+      }
+    });
+    toast(`Attendance saved for ${course.code} on ${attState.date}`);
+    attendanceLog[key] = {}; // reset so re-saving doesn't double count
+    renderAttendance(root);
+  });
+}
+
+/* =========================================================
+   FEES
+========================================================= */
+function renderFees(root){
+  const due = students.filter(s=>s.fee==="Due");
+  const paid = students.filter(s=>s.fee==="Paid");
+  root.innerHTML = `
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card"><div class="label">Total Students</div><div class="value">${students.length}</div></div>
+      <div class="stat-card"><div class="label">Dues Pending</div><div class="value" style="color:var(--maroon)">${due.length}</div></div>
+      <div class="stat-card"><div class="label">Fully Paid</div><div class="value" style="color:var(--forest)">${paid.length}</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Fee Ledger</h3></div>
+      <table>
+        <thead><tr><th>Student</th><th>Department</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${students.map(s=>`
+            <tr>
+              <td><div class="cell-name"><div class="avatar">${initials(s.name)}</div><div><div class="n">${escapeHtml(s.name)}</div><div class="r">${s.roll}</div></div></div></td>
+              <td>${s.dept}</td>
+              <td><span class="badge ${s.fee==='Paid'?'badge-paid':'badge-due'}">${s.fee}</span></td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn small ${s.fee==='Due'?'btn-brass':''}" data-toggle-fee="${s.id}">
+                    ${s.fee==='Due' ? 'Mark Paid' : 'Mark Due'}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+  root.querySelectorAll('[data-toggle-fee]').forEach(b=>b.addEventListener('click', ()=>{
+    const s = students.find(x=>x.id===Number(b.dataset.toggleFee));
+    s.fee = s.fee==='Due' ? 'Paid' : 'Due';
+    toast(`${s.name} marked ${s.fee}`);
+    renderAll();
+  }));
+}
+
+/* =========================================================
+   TIMETABLE
+========================================================= */
+function renderTimetable(root){
+  root.innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h3>Weekly Timetable — All Departments</h3></div>
+      <div class="panel-body" style="overflow-x:auto;">
+        <table class="timetable">
+          <thead>
+            <tr><th>Period</th>${timetable.days.map(d=>`<th>${d}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            ${timetable.periods.map((p,i)=>`
+              <tr>
+                <td class="slot-head">${p}</td>
+                ${timetable.days.map(d=>{
+                  const code = timetable.grid[d][i];
+                  if(!code) return `<td></td>`;
+                  const c = courses.find(x=>x.code===code);
+                  return `<td class="cell-filled"><div class="tt-code">${code}</div><div class="tt-room">${c?c.dept.split(' ')[0]:''}</div></td>`;
+                }).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   EMPTY STATE / OVERLAY
+========================================================= */
+function emptyState(title, sub){
+  return `<div class="empty-state"><div class="glyph">◈</div><div class="t">${title}</div><div>${sub}</div></div>`;
+}
+function openOverlay(){ document.getElementById('overlay').classList.add('open'); }
+function closeOverlay(){ document.getElementById('overlay').classList.remove('open'); }
+document.getElementById('overlay').addEventListener('click', e=>{
+  if(e.target.id==='overlay') closeOverlay();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') closeOverlay();
+});
+
+/* =========================================================
+   INIT
+========================================================= */
+renderAll();
+</script>
+</body>
+</html>
